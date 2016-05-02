@@ -1,4 +1,4 @@
-const interval = 5;
+const interval = 7;
 const expandDuration = 2500;
 const spiralRadius = window.innerWidth;
 const spiralRate = 3;
@@ -12,12 +12,15 @@ const area = d3.select('body')
   .attr('class', 'd3-area');
 
 let color;
-let hslIndex = 0;
+let grayScale = 0;
+let shade;
 let spiralX, spiralY;
 let radian = 0;
-let createCircle = (mouse) => {
-  hslIndex++;
-  color = d3.hsl(hslIndex % 360, 1, .5).rgb();
+let createCircle = (position) => {
+  grayScale += 2;
+  shade = String(Math.abs(grayScale % 500 - 255))
+  // color = d3.hsl(hslIndex % 360, 1, .5).rgb();
+  color = 'rgb(' + shade + ', ' + shade + ', ' + shade + ')';
 
   radian += spiralRate;
   spiralX = Math.cos(radian) * spiralRadius;
@@ -25,8 +28,8 @@ let createCircle = (mouse) => {
 
   area.append("div")
     .attr('class', 'particle')
-    .style('top', String(mouse[1] + spiralY - startRadius) + 'px')
-    .style('left', String(mouse[0] + spiralX - startRadius) + 'px')
+    .style('top', String(position[1] + spiralY - startRadius) + 'px')
+    .style('left', String(position[0] + spiralX - startRadius) + 'px')
     .style('width', String(startRadius * 2) + 'px')
     .style('height', String(startRadius * 2) + 'px')
     .style('border-color', color)
@@ -34,9 +37,9 @@ let createCircle = (mouse) => {
     .transition()
     .ease(Math.sqrt)
     .duration(expandDuration)
-    .style('opacity', .65)
-    .style('top', String(mouse[1] - endRadius) + 'px')
-    .style('left', String(mouse[0] - endRadius) + 'px')
+    .style('opacity', 1)
+    .style('top', String(position[1] - endRadius) + 'px')
+    .style('left', String(position[0] - endRadius) + 'px')
     .style('width',  String(endRadius * 2) + 'px')
     .style('height',  String(endRadius * 2) + 'px')
     .style('border-height', endWidth)
