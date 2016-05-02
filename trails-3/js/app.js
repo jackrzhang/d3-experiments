@@ -1,34 +1,38 @@
 const expandDuration = 1500;
-const startRadius = 2;
-const endRadius = 150;
-const startWidth = '1px';
+const spiralRadius = 150;
+const spiralRate = 2;
+const startRadius = 5;
+const endRadius = 0;
+const startWidth = '8px';
 const endWidth = '5px';
-const circleColors = ['#9877a2', '#8499c1', '#d990a3', '#f2dede', ' #96c8c5'];
 
 const area = d3.select('body')
   .append('div')
   .attr('class', 'd3-area');
 
-// mouse move / touch move event listening
-let mouse;
-area.on("mousemove", function() { 
-  mouse = d3.mouse(this); 
-  createCircle(mouse);
-});
 
+let color;
+let hslIndex = 0;
+let spiralX, spiralY;
+let radian = 0;
 let createCircle = (mouse) => {
-  let color = circleColors[Math.floor(Math.random() * circleColors.length)];
+  hslIndex++;
+  color = d3.hsl(hslIndex % 360, 1, .5).rgb();
+
+  radian += spiralRate;
+  spiralX = Math.cos(radian) * spiralRadius;
+  spiralY = Math.sin(radian) * spiralRadius;
 
   area.append("div")
     .attr('class', 'particle')
-    .style('top', String(mouse[1] - startRadius) + 'px')
-    .style('left', String(mouse[0] - startRadius) + 'px')
+    .style('top', String(mouse[1] + spiralY - startRadius) + 'px')
+    .style('left', String(mouse[0] + spiralX - startRadius) + 'px')
     .style('width', String(startRadius * 2) + 'px')
     .style('height', String(startRadius * 2) + 'px')
     .style('border-color', color)
     .style('border-width', startWidth)
     .transition()
-    .ease('poly(1.5)-out')
+    .ease(Math.sqrt)
     .duration(expandDuration)
     .style('opacity', 0)
     .style('top', String(mouse[1] - endRadius) + 'px')
@@ -36,5 +40,12 @@ let createCircle = (mouse) => {
     .style('width',  String(endRadius * 2) + 'px')
     .style('height',  String(endRadius * 2) + 'px')
     .style('border-height', endWidth)
-    .remove()
+    .remove();
 }
+
+// mouse move / touch move event listening
+let mouse;
+area.on("mousemove", function() { 
+  mouse = d3.mouse(this); 
+  createCircle(mouse);
+});

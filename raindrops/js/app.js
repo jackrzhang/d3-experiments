@@ -1,7 +1,7 @@
 const area = d3.select('.d3-area');
 
 const expandDuration = 1500;
-const startRadius = '1px';
+const startRadius = '.5px';
 const endRadius = '50px';
 const startWidth = '1px';
 const endWidth = '3px';
@@ -21,7 +21,7 @@ var createRaindrop = () => {
     .style('border-color', color)
     .style('border-width', startWidth)
     .transition()
-    .ease('poly(1.2)-out')
+    .ease('poly(2)-out')
     .duration(expandDuration)
     .style('opacity', 0)
     .style('width', endRadius)
